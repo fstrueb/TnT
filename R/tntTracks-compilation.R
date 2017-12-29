@@ -90,7 +90,7 @@ setMethod("wakeupTrack", signature = c(track = "RangeBasedTrack"),
         
         # Simulate a method dispatch
         use.class <- match.class(class,
-            c("BlockTrack", "GeneTrack", "TxTrack", "VlineTrack",
+            c("BlockTrack", "GeneTrack", "TxTrack", "SeqTrack", "VlineTrack",
               "PinTrack", "LineTrack", "AreaTrack")
         )
         
@@ -98,6 +98,7 @@ setMethod("wakeupTrack", signature = c(track = "RangeBasedTrack"),
             BlockTrack   = "tnt.board.track.feature.block",
             GeneTrack    = "tnt.board.track.feature.genome.gene",
             TxTrack      = "tnt.board.track.feature.genome.transcript",
+            SeqTrack     = "tnt.board.track.feature.genome.sequence",
             VlineTrack   = "tnt.board.track.feature.vline",
             PinTrack     = "tnt.board.track.feature.pin",
             LineTrack    = "tnt.board.track.feature.line",
