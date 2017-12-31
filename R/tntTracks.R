@@ -62,7 +62,7 @@ setClass("PinTrack", contains = "DomainValTrack", slots = c(Data = "PosValTrackD
 setClass("LineTrack", contains = "DomainValTrack", slots = c(Data = "PosValTrackData"))
 setClass("AreaTrack", contains = "DomainValTrack", slots = c(Data = "PosValTrackData"))
 
-
+setClass("SeqTrack", contains = "RangeBasedTrack", slots = c(Data = "PosValTrackData"))
 
 #### Seqinfo Methods        ========
 

@@ -10,7 +10,7 @@ setClass("PosTrackData", contains = "RangeTrackData")
 setClass("PosValTrackData", contains = "PosTrackData")
 setClass("GeneTrackData", contains = "RangeTrackData")
 setClass("TxTrackData", contains = "RangeTrackData")
-
+#setClass("SeqTrackData", contains = "RangeTrackData")
 
 
 #### TrackData constructors     ========
@@ -352,6 +352,47 @@ TxTrackDataFromTxDb <- function (txdb, seqlevel = seqlevels(txdb), color = "red"
     new("TxTrackData", gr.txs)
 }
 
+SeqDataFromBSgenome = function(BSgenome, range, color = color) {
+
+  mcols(range) <- NULL
+  
+  rangeNew <- GRanges(seqnames = seqnames(range), ranges = IRanges(seq(min(start(range)), max(end(range))), width = 1))
+  
+  range <- RangeTrackData(range = rangeNew)
+  
+  # first make a data frame
+  myPos <- seq(from = min(start(range)), to = max(end(range)))
+  mySeq <- strsplit(as.character(BSgenome::getSeq(BSgenome, range)), c())
+  
+  range$pos <- myPos
+  range$sequence <- mySeq
+  
+  letterToColor = function(seqList, color) {
+    ans = list(length = length(seqList))
+    for (i in seq_along(seqList)) {
+      ans[[i]] = switch(seqList[[i]],
+                        "A" = color[1],
+                        "C" = color[2],
+                        "G" = color[3],
+                        "T" = color[4])
+    }
+    as.character(ans)
+  }
+  
+  range$color <- letterToColor(range$sequence, color = color)
+  range$val <- 1
+  # range$limit <- limit
+  
+  range = as(range, "PosValTrackData")
+  #range$display_label <- strandlabel(labels, strand(range))
+  
+  #validObject(range)
+  range
+}
+
+
+#### Set validities ========
+
 setValidity("PosTrackData",
     function (object) {
         if (all(width(object) == 1)) TRUE
@@ -469,7 +510,7 @@ setMethod("compileTrackData", signature = "RangeTrackData",
                 tnt.board.track.data.sync = ma(),
                 retriever = jc(tnr.range_data_retriever =
                                    ma(df, if (full) TRUE else FALSE))
-            )
+                            )
         jc.data
     }
 )
@@ -514,3 +555,24 @@ setMethod("compileTrackData", signature = "PosValTrackData",
         jc.data
     }
 )
+
+# setMethod("compileTrackData", signature = "SeqTrackData",
+#           function (trackData, full = FALSE) {
+#             stopifnot(length(unique(seqnames(trackData))) == 1)
+#             stopifnot(all(width(trackData) == 1))
+#             validObject(trackData)
+#             
+#             df <- as.data.frame(trackData, optional = TRUE)[c("start", colnames(mcols(trackData)))]
+#             df <- S4Vectors::rename(df, c(start = "pos"))
+#             
+#             jc.data <- jc(
+#               tnt.board.track.data.sync = ma(),
+#               retriever = jc(
+#                 tnr.pos_data_retriever = ma(
+#                   jc(tnr.scale_val = ma(df)) 
+#                 )
+#               )
+#             )
+#             jc.data
+#           }
+# )

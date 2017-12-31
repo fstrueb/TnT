@@ -4,13 +4,13 @@
 
 
 new_track <- function (class, data, display = list(), background = NULL, height = NULL, label = NULL) {
-    track <- new(Class = class, Data = data, Display = display)
-    if (length(label) > 1L)
-        label <- paste(label, collapse = " ")
-    trackSpec(track, "background") <- background
-    trackSpec(track, "height")     <- height
-    trackSpec(track, "label")      <- label
-    track
+  track <- new(Class = class, Data = data, Display = display)
+  if (length(label) > 1L)
+    label <- paste(label, collapse = " ")
+  trackSpec(track, "background") <- background
+  trackSpec(track, "height")     <- height
+  trackSpec(track, "label")      <- label
+  track
 }
 
 
@@ -47,20 +47,20 @@ new_track <- function (class, data, display = list(), background = NULL, height 
 BlockTrack <- function (range, label = deparse(substitute(range)),
                         tooltip = mcols(range), color = "blue", background = NULL,
                         height = 30) {
-    
-    data <- RangeTrackData(range = range, tooltip = tooltip, color = color)
-    new_track("BlockTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  
+  data <- RangeTrackData(range = range, tooltip = tooltip, color = color)
+  new_track("BlockTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
 #' @export
 VlineTrack <- function (pos, label = deparse(substitute(pos)), tooltip = mcols(pos),
                         color = "green", background = NULL, height = 40) {
-    ## TODO: remove tooltip?
-    data <- PosTrackData(pos = pos, color = color, tooltip = tooltip)
-    new_track("VlineTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  ## TODO: remove tooltip?
+  data <- PosTrackData(pos = pos, color = color, tooltip = tooltip)
+  new_track("VlineTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
@@ -69,14 +69,14 @@ PinTrack <- function (pos, value = mcols(pos)$value, domain = numeric(),
                       label = deparse(substitute(pos)),
                       tooltip = mcols(pos), color = "red", background = NULL,
                       height = 40) {
-    
-    if (is.null(value))
-        stop("Value (i.e. height) at each position not specified.")
-    #stopifnot(length(domain) == 2)
-    
-    data <- PosValTrackData(pos = pos, val = value, domain = domain, tooltip = tooltip, color = color)
-    new_track("PinTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  
+  if (is.null(value))
+    stop("Value (i.e. height) at each position not specified.")
+  #stopifnot(length(domain) == 2)
+  
+  data <- PosValTrackData(pos = pos, val = value, domain = domain, tooltip = tooltip, color = color)
+  new_track("PinTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
@@ -84,14 +84,14 @@ PinTrack <- function (pos, value = mcols(pos)$value, domain = numeric(),
 LineTrack <- function (pos, value = mcols(pos)$value, domain = numeric(),
                        label = deparse(substitute(pos)), color = "yellow", background = NULL,
                        height = 70) {
-    if (is.null(value))
-        stop("Value (i.e. height) at each position not specified.")
-    #stopifnot(length(domain) == 2)
-    
-    ## Do not need tooltip
-    data <- PosValTrackData(pos = pos, val = value, domain = domain, tooltip = NULL, color = color)
-    new_track("LineTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  if (is.null(value))
+    stop("Value (i.e. height) at each position not specified.")
+  #stopifnot(length(domain) == 2)
+  
+  ## Do not need tooltip
+  data <- PosValTrackData(pos = pos, val = value, domain = domain, tooltip = NULL, color = color)
+  new_track("LineTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
@@ -99,23 +99,23 @@ LineTrack <- function (pos, value = mcols(pos)$value, domain = numeric(),
 AreaTrack <- function (pos, value = mcols(pos)$value, domain = numeric(),
                        label = deparse(substitute(pos)), color = "pink", background = NULL,
                        height = 70) {
-    arglist <- as.list(environment())
-    linetrack <- do.call(LineTrack, arglist)
-    ans <- as(as(linetrack, "DomainValTrack"), "AreaTrack")
-    validObject(ans)
-    ans
+  arglist <- as.list(environment())
+  linetrack <- do.call(LineTrack, arglist)
+  ans <- as(as(linetrack, "DomainValTrack"), "AreaTrack")
+  validObject(ans)
+  ans
 }
 
 #' @rdname track-constructors
 #' @param txdb,seqlevel The TxDb and seqlevel to extract gene or transcript from.
 #' @export
 GeneTrackFromTxDb <- function (txdb, seqlevel = seqlevels(txdb),
-                       label = deparse(substitute(txdb)), # TODO: tooltip?
-                       color = "black", background = NULL, height = 100) {
-    
-    data <- GeneTrackDataFromTxDb(txdb = txdb, seqlevel = seqlevel, color = color)
-    new_track("GeneTrack", background = background, height = height,
-              label = label, data = data, display = list())
+                               label = deparse(substitute(txdb)), # TODO: tooltip?
+                               color = "black", background = NULL, height = 100) {
+  
+  data <- GeneTrackDataFromTxDb(txdb = txdb, seqlevel = seqlevel, color = color)
+  new_track("GeneTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
@@ -126,12 +126,12 @@ FeatureTrack <- function (range, label = deparse(substitute(range)),
                           tooltip = mcols(range),
                           names = base::names(range),
                           color = "black", background = NULL, height = 200) {
-    force(tooltip)
-    force(names)
-    data <- GeneTrackData(range, labels = names,
-                          ids = seq_along(range), tooltip = tooltip, color = color)
-    new_track("GeneTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  force(tooltip)
+  force(names)
+  data <- GeneTrackData(range, labels = names,
+                        ids = seq_along(range), tooltip = tooltip, color = color)
+  new_track("GeneTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
@@ -142,34 +142,34 @@ GroupFeatureTrack <- function (grl, label = deparse(substitute(grl)),
                                tooltip = mcols(grl),
                                names = base::names(grl),
                                color = "black", background = NULL, height = 200) {
-    force(tooltip)
-    force(names)
-    
-    # # Check wheter strands within each group are consistent
-    # strands <- as(unique(strand(grl)), "CharacterList")
-    # strands[lengths(strands) == 0L] <- "" # may be empty
-    # if (any(lengths(strands) != 1L))
-    #     stop("Strands are not consistent within each group")
-    # strands <- as.character(strands)
-    # 
-    # labels <- strandlabel(names, strands)
-    
-    data <- TxTrackDataFromGRangesList(grl, tooltip = tooltip, color = color,
-                                       labels = names)
-    new_track("TxTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  force(tooltip)
+  force(names)
+  
+  # # Check wheter strands within each group are consistent
+  # strands <- as(unique(strand(grl)), "CharacterList")
+  # strands[lengths(strands) == 0L] <- "" # may be empty
+  # if (any(lengths(strands) != 1L))
+  #     stop("Strands are not consistent within each group")
+  # strands <- as.character(strands)
+  # 
+  # labels <- strandlabel(names, strands)
+  
+  data <- TxTrackDataFromGRangesList(grl, tooltip = tooltip, color = color,
+                                     labels = names)
+  new_track("TxTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
 #' @export
 TxTrackFromTxDb <- function (txdb, seqlevel = seqlevels(txdb),
-                     label = deparse(substitute(txdb)),
-                     color = "red", background = NULL, height = 300) {
-    
-    data <- TxTrackDataFromTxDb(txdb, seqlevel = seqlevel, color = color)
-    
-    new_track("TxTrack", background = background, height = height,
-              label = label, data = data, display = list())
+                             label = deparse(substitute(txdb)),
+                             color = "red", background = NULL, height = 300) {
+  
+  data <- TxTrackDataFromTxDb(txdb, seqlevel = seqlevel, color = color)
+  
+  new_track("TxTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
 
 #' @rdname track-constructors
@@ -180,8 +180,22 @@ TxTrackFromTxDb <- function (txdb, seqlevel = seqlevels(txdb),
 #' @export
 TxTrackFromGRanges <- function (gr, label = deparse(substitute(gr)),
                                 color = "red", background = NULL, height = 300) {
-    data <- TxTrackDataFromGRanges(gr, color = color)
-    new_track("TxTrack", background = background, height = height,
-              label = label, data = data, display = list())
+  data <- TxTrackDataFromGRanges(gr, color = color)
+  new_track("TxTrack", background = background, height = height,
+            label = label, data = data, display = list())
 }
-    
+
+#' @rdname track-constructors
+#' @param BSgenome For `SeqTrackFromBSgenome` function, a BSgenome object.
+#' @export
+SeqTrackFromBSgenome <- function (BSgenome, range, label = deparse(substitute(Bsgenome)),
+                                  color = c('green', 'blue', 'yellow', 'red'), background = NULL,
+                                  height = 30) {
+  
+  data <- SeqDataFromBSgenome(BSgenome, range, color = color)
+  
+  # needs to return a  df with "Pos" and "Seq" columns, one letter each nucleotide per row, inherits from PosValTrackData
+  
+  new_track("SeqTrack", background = background, height = height,
+            label = label, data = data, display = list())
+}
