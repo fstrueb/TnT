@@ -10,7 +10,7 @@ setClass("PosTrackData", contains = "RangeTrackData")
 setClass("PosValTrackData", contains = "PosTrackData")
 setClass("GeneTrackData", contains = "RangeTrackData")
 setClass("TxTrackData", contains = "RangeTrackData")
-#setClass("SeqTrackData", contains = "RangeTrackData")
+setClass("SeqTrackData", contains = "RangeTrackData")
 
 
 #### TrackData constructors     ========
@@ -380,13 +380,15 @@ SeqDataFromBSgenome = function(BSgenome, range, color = color) {
   }
   
   range$color <- letterToColor(range$sequence, color = color)
-  range$val <- 1
+  # range$val <- 1
   # range$limit <- limit
   
-  range = as(range, "PosValTrackData")
+  #range = as(range, "PosValTrackData")
   #range$display_label <- strandlabel(labels, strand(range))
   
   #validObject(range)
+  
+  range = as(range, 'SeqTrackData')
   range
 }
 
@@ -483,6 +485,22 @@ setValidity("TxTrackData",
     }
 )
 
+setValidity("SeqTrackData",
+            function (object) {
+              if (!is.data.frame(object$tooltip))
+                if (is.null(object$tooltip))
+                  return("Missing 'tooltip' meta-column in RangeTrackData")
+              else
+                return("The 'tooltip' meta-column should be a data frame")
+              if (!is.character(object$color) && !is.integer(object$color)) {
+                if (is.null(object$color))
+                  return("Missing 'color' meta-column in RangeTrackData")
+                else
+                  return("The 'color' meta-column should be either character or integer")
+              }
+              TRUE
+            }
+)
 
 #### TrackData Compilation  ========
 
@@ -556,23 +574,17 @@ setMethod("compileTrackData", signature = "PosValTrackData",
     }
 )
 
-# setMethod("compileTrackData", signature = "SeqTrackData",
-#           function (trackData, full = FALSE) {
-#             stopifnot(length(unique(seqnames(trackData))) == 1)
-#             stopifnot(all(width(trackData) == 1))
-#             validObject(trackData)
-#             
-#             df <- as.data.frame(trackData, optional = TRUE)[c("start", colnames(mcols(trackData)))]
-#             df <- S4Vectors::rename(df, c(start = "pos"))
-#             
-#             jc.data <- jc(
-#               tnt.board.track.data.sync = ma(),
-#               retriever = jc(
-#                 tnr.pos_data_retriever = ma(
-#                   jc(tnr.scale_val = ma(df)) 
-#                 )
-#               )
-#             )
-#             jc.data
-#           }
-# )
+setMethod("compileTrackData", signature = "SeqTrackData",
+          function (trackData, full = FALSE) {
+            stopifnot(length(unique(seqnames(trackData))) == 1)
+            df <- as.data.frame(trackData, optional = TRUE)[c("start", "end", colnames(mcols(trackData)))]
+            
+              jc.data <- jc(
+                tnt.board.track.data.sync = ma(),
+                retriever = jc(tnr.range_data_retriever =
+                                 ma(df, if (full) TRUE else FALSE))
+                
+              )
+            jc.data
+          }
+)
